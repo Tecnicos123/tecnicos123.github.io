@@ -1,0 +1,13 @@
+body {
+  background-color: #3cb371;
+}
+
+
+h1 {
+  color: white;
+  font: oblique bold 130% cursive;
+}
+
+p {
+  font: small-caps 100%/200% serif;
+}
