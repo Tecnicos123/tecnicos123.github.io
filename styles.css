@@ -28,7 +28,7 @@ body {
     gap: 10px;
 }
 
-.tarjeta-de-game {
+.tarjetas-de-animal-game {
     width: 180px;
     height: 100px;
     background: #11468F;
@@ -41,7 +41,7 @@ body {
     color: white;
 }
 
-.tarjeta-de-game img {
+.tarjetas-de-animal-game img {
     width: 60px;
 }
 

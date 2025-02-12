@@ -6,8 +6,10 @@ body {
 h1 {
   color: white;
   font: oblique bold 130% cursive;
+  align-items: center;
 }
 
 p {
   font: small-caps 100%/200% serif;
+  align-items: center;
 }
