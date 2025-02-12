@@ -29,12 +29,12 @@ body {
 }
 
 .tarjetas-de-animal-game {
-    width: 100px;
-    height: 100px;
+    width: 10px;
+    height: 10px;
     background: #11468F;
     padding: 10PX;
     box-sizing: border-box;
-    border-radius: 20px;
+    border-radius: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -42,11 +42,11 @@ body {
 }
 
 .tarjetas-de-animal-game img {
-    width: 40px;
+    width: 10px;
 }
 
 #boton-mascota {
-    width: 180px;
+    width: 100px;
     height: 40px;
     border-radius: 20px;
     background: transparent;
@@ -115,7 +115,7 @@ input:checked + label {
     align-items: center;
 }
 
-@media (max-width: 360px) {
+@media (max-width: 300px) {
     .tarjetas, .tarjetas-ataques {
         flex-direction: column;
     }
