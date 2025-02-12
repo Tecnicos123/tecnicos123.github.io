@@ -29,7 +29,7 @@ body {
 }
 
 .tarjetas-de-animal-game {
-    width: 180px;
+    width: 100px;
     height: 100px;
     background: #11468F;
     padding: 10PX;
@@ -42,7 +42,7 @@ body {
 }
 
 .tarjetas-de-animal-game img {
-    width: 60px;
+    width: 40px;
 }
 
 #boton-mascota {
