@@ -1,2 +1,2 @@
 # practicaweb.github.io
-Práctica web 
+Práctica web y de programación.
