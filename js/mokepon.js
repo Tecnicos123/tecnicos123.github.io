@@ -22,9 +22,11 @@ let mokepones = []
 let ataqueJugador =[]
 let ataqueEnemigo = []
 let opcionDeMokepones
-let inputHipodoge
-let inputCapipepo
-let inputRatigueya
+let inputCoco
+let inputMuñeca
+let inputTortuga
+let inputPerico
+let inputCaramelo
 let mascotaJugador
 let ataquesMokepon
 let ataquesMokeponEnemigo
