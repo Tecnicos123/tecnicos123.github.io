@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Chistes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .quiz-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .question {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .answer-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+        .answer-input:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .answer-display {
+            background-color: #e8f5e9;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-size: 16px;
+            font-weight: bold;
+            color: #2e7d32;
+        }
+        .feedback {
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+        .correct {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .score {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            color: #333;
+        }
+        .progress {
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            padding: 3px;
+            margin-bottom: 20px;
+        }
+        .progress-bar {
+            background-color: #4CAF50;
+            height: 20px;
+            border-radius: 7px;
+            transition: width 0.3s ease;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>🎭 Quiz de Chistes 🎭</h1>
+        
+        <div class="progress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        
+        <div id="currentQuestion"></div>
+        <input type="text" id="answerInput" class="answer-input" placeholder="Escribe tu respuesta aquí...">
+        <button id="submitBtn" class="button">Enviar Respuesta</button>
+        <button id="nextBtn" class="button hidden">Siguiente</button>
+        
+        <div id="feedback" class="feedback hidden"></div>
+        <div id="correctAnswer" class="answer-display hidden"></div>
+        
+        <div id="finalScore" class="score hidden"></div>
+        <button id="restartBtn" class="button hidden">Reiniciar Quiz</button>
+    </div>
+
+    <script>
+        const chistes = [
+            {
+                pregunta: "¿Qué sale de la cruza entre un mono y un pato?",
+                respuestaCorrecta: "un monopatín",
+                respuestasAlternativas: ["monopatín", "un monopatin", "monopatin"]
+            },
+            {
+                pregunta: "¿Por qué vuelan los pájaros pa'l sur?",
+                respuestaCorrecta: "porque caminando tardarían muchísimo",
+                respuestasAlternativas: ["porque caminando tardarian muchisimo", "porque caminando tardarían mucho", "porque es muy lejos para caminar"]
+            },
+            {
+                pregunta: "¿En qué se parecen una familia, un bombero y un barco?",
+                respuestaCorrecta: "el bombero y el barco tienen casco, y la familia bien gracias",
+                respuestasAlternativas: ["en que el bombero y el barco tienen casco", "tienen casco", "el bombero y barco tienen casco y la familia bien gracias"]
+            }
+        ];
+
+        let indicePreguntaActual = 0;
+        let puntuacion = 0;
+        let respondido = false;
+
+        // Elementos del DOM
+        const questionEl = document.getElementById('currentQuestion');
+        const answerInput = document.getElementById('answerInput');
+        const submitBtn = document.getElementById('submitBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const feedbackEl = document.getElementById('feedback');
+        const correctAnswerEl = document.getElementById('correctAnswer');
+        const finalScoreEl = document.getElementById('finalScore');
+        const restartBtn = document.getElementById('restartBtn');
+        const progressBar = document.getElementById('progressBar');
+
+        // Mostrar pregunta actual
+        function mostrarPregunta() {
+            if (indicePreguntaActual < chistes.length) {
+                const preguntaActual = chistes[indicePreguntaActual];
+                questionEl.textContent = preguntaActual.pregunta;
+                answerInput.value = '';
+                answerInput.focus();
+                respondido = false;
+                
+                // Ocultar elementos de feedback
+                feedbackEl.classList.add('hidden');
+                correctAnswerEl.classList.add('hidden');
+                nextBtn.classList.add('hidden');
+                submitBtn.classList.remove('hidden');
+                
+                // Actualizar barra de progreso
+                const progreso = (indicePreguntaActual / chistes.length) * 100;
+                progressBar.style.width = progreso + '%';
+            } else {
+                mostrarResultadoFinal();
+            }
+        }
+
+        // Verificar respuesta
+        function verificarRespuesta() {
+            if (respondido) return;
+            
+            const respuestaUsuario = answerInput.value.toLowerCase().trim();
+            const preguntaActual = chistes[indicePreguntaActual];
+            
+            // Normalizar respuesta para comparación
+            const respuestaNormalizada = respuestaUsuario
+                .replace(/[¿?¡!]/g, '')
+                .replace(/á/g, 'a')
+                .replace(/é/g, 'e')
+                .replace(/í/g, 'i')
+                .replace(/ó/g, 'o')
+                .replace(/ú/g, 'u')
+                .replace(/ñ/g, 'n');
+
+            // Verificar si la respuesta es correcta
+            let esCorrecta = false;
+            
+            // Verificar respuesta exacta
+            if (respuestaNormalizada === preguntaActual.respuestaCorrecta.toLowerCase()) {
+                esCorrecta = true;
+            } else {
+                // Verificar respuestas alternativas
+                for (let alternativa of preguntaActual.respuestasAlternativas) {
+                    const alternativaNormalizada = alternativa.toLowerCase()
+                        .replace(/[¿?¡!]/g, '')
+                        .replace(/á/g, 'a')
+                        .replace(/é/g, 'e')
+                        .replace(/í/g, 'i')
+                        .replace(/ó/g, 'o')
+                        .replace(/ú/g, 'u')
+                        .replace(/ñ/g, 'n');
+                    
+                    if (respuestaNormalizada.includes(alternativaNormalizada) || 
+                        alternativaNormalizada.includes(respuestaNormalizada)) {
+                        esCorrecta = true;
+                        break;
+                    }
+                }
+            }
+
+            // Mostrar feedback
+            respondido = true;
+            
+            if (esCorrecta) {
+                puntuacion++;
+                feedbackEl.textContent = '¡Correcto! 🎉';
+                feedbackEl.className = 'feedback correct';
+            } else {
+                feedbackEl.textContent = '¡Incorrecto! 😅';
+                feedbackEl.className = 'feedback incorrect';
+            }
+            
+            // Mostrar respuesta correcta
+            const respuestas = {
+                0: "¡Un monopatín!",
+                1: "¡Porque caminando tardarían muchísimo!",
+                2: "En que el bombero y el barco tienen casco.\n¿Y la familia? -Bien, gracias."
+            };
+            
+            correctAnswerEl.innerHTML = respuestas[indicePreguntaActual].replace('\n', '<br>');
+            
+            // Mostrar elementos
+            feedbackEl.classList.remove('hidden');
+            correctAnswerEl.classList.remove('hidden');
+            submitBtn.classList.add('hidden');
+            nextBtn.classList.remove('hidden');
+        }
+
+        // Mostrar resultado final
+        function mostrarResultadoFinal() {
+            questionEl.style.display = 'none';
+            answerInput.style.display = 'none';
+            submitBtn.style.display = 'none';
+            nextBtn.style.display = 'none';
+            feedbackEl.style.display = 'none';
+            correctAnswerEl.style.display = 'none';
+            
+            const porcentaje = Math.round((puntuacion / chistes.length) * 100);
+            finalScoreEl.innerHTML = `
+                <h2>¡Quiz Completado! 🎭</h2>
+                <p>Tu puntuación: ${puntuacion}/${chistes.length} (${porcentaje}%)</p>
+                ${porcentaje >= 70 ? 
+                    '<p>¡Excelente! Tienes un gran sentido del humor 😄</p>' : 
+                    porcentaje >= 50 ? 
+                    '<p>¡Bien! Algunos chistes se te escaparon 😊</p>' : 
+                    '<p>¡No te preocupes! Los chistes pueden ser difíciles 😅</p>'
+                }
+            `;
+            finalScoreEl.classList.remove('hidden');
+            restartBtn.classList.remove('hidden');
+            
+            // Actualizar barra de progreso al 100%
+            progressBar.style.width = '100%';
+        }
+
+        // Reiniciar quiz
+        function reiniciarQuiz() {
+            indicePreguntaActual = 0;
+            puntuacion = 0;
+            respondido = false;
+            
+            // Mostrar elementos del quiz
+            questionEl.style.display = 'block';
+            answerInput.style.display = 'block';
+            
+            // Ocultar elementos finales
+            finalScoreEl.classList.add('hidden');
+            restartBtn.classList.add('hidden');
+            
+            mostrarPregunta();
+        }
+
+        // Event Listeners
+        submitBtn.addEventListener('click', verificarRespuesta);
+        nextBtn.addEventListener('click', () => {
+            indicePreguntaActual++;
+            mostrarPregunta();
+        });
+        restartBtn.addEventListener('click', reiniciarQuiz);
+
+        // Permitir enviar con Enter
+        answerInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                if (!respondido) {
+                    verificarRespuesta();
+                } else {
+                    indicePreguntaActual++;
+                    mostrarPregunta();
+                }
+            }
+        });
+
+        // Inicializar el quiz
+        mostrarPregunta();
+    </script>
+</body>
+</html>
