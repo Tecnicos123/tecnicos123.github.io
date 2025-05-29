@@ -25,7 +25,7 @@
     /* Encabezado */
     header {
       background-color: #3498db;
-      color: white;
+      color: rgb(228, 238, 228);
       padding: 20px 0;
       text-align: center;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -42,6 +42,25 @@
       font-size: 1.2rem;
       opacity: 0.9;
     }
+
+    nav {
+          background-color: var(--blue-color);
+          padding: 1rem;
+          display: flex;
+          justify-content: center;
+        }
+        
+      nav a {
+          color: rgb(6, 10, 63);
+          text-decoration: none;
+          margin: 0 15px;
+          font-weight: bold;
+          transition: color 0.3s;
+        }
+        
+        nav a:hover {
+          color: var(--accent-color);
+        }
     
     /* Contenido principal */
     main {
@@ -147,6 +166,13 @@
       <p>De el libro: Inventa tus propios juegos de computadora con Python - 3ª edición</p>
     </div>
   </header>
+
+  <nav>
+        <a href="https://dspace.ups.edu.ec/bitstream/123456789/19346/4/Codifica%20en%20Python%20version%2014-08-2020%20WEB.pdf">Libros Recomendados</a>
+        <a href="https://www.cuandoenelmundo.com/calendario/panama/2025">Calendario</a>
+        <a href="https://www.wscubetech.com/resources/python/programs">Prácticas de Python</a>
+        <a href="#"></a>
+  </nav>
   
   <div class="container">
     <main>
