@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 Analizador de Lectura con Cronómetro</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-left: 5px solid #3498db;
+        }
+        
+        .section-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .timer-display {
+            font-size: 3em;
+            font-weight: bold;
+            color: #e74c3c;
+            text-align: center;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .btn-start {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+        }
+        
+        .btn-stop {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        
+        .btn-reset {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+        }
+        
+        .btn-analyze {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            width: 100%;
+            font-size: 1.2em;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .text-area {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 2px solid #bdc3c7;
+            border-radius: 10px;
+            font-size: 1.1em;
+            line-height: 1.6;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+        
+        .text-area:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
+        }
+        
+        .stats-container {
+            background: linear-gradient(135deg, #ecf0f1, #ffffff);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 2px solid #3498db;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #3498db;
+        }
+        
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        
+        .speed-indicator {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        
+        .speed-slow { background: #ffebee; color: #e74c3c; }
+        .speed-normal { background: #fff3e0; color: #f39c12; }
+        .speed-fast { background: #e8f5e8; color: #27ae60; }
+        .speed-very-fast { background: #f3e5f5; color: #8e44ad; }
+        
+        .words-container {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 2px solid #bdc3c7;
+            border-radius: 10px;
+            background: white;
+        }
+        
+        .words-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 5px;
+            padding: 15px;
+        }
+        
+        .word-item {
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            font-size: 0.9em;
+            border-left: 3px solid #3498db;
+        }
+        
+        .word-item:nth-child(even) {
+            background: #e8f4f8;
+        }
+        
+        @media (max-width: 768px) {
+            .timer-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 200px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Analizador de Lectura</h1>
+            <p>Mejora tu velocidad y comprensión de lectura</p>
+        </div>
+        
+        <div class="content">
+            <!-- Cronómetro -->
+            <div class="section">
+                <div class="section-title">
+                    ⏱️ Cronómetro de Lectura
+                </div>
+                <div class="timer-display" id="timerDisplay">00:00:00</div>
+                <div class="timer-controls">
+                    <button class="btn btn-start" id="startBtn" onclick="startTimer()">▶️ Iniciar</button>
+                    <button class="btn btn-stop" id="stopBtn" onclick="stopTimer()" disabled>⏹️ Detener</button>
+                    <button class="btn btn-reset" id="resetBtn" onclick="resetTimer()">🔄 Reiniciar</button>
+                </div>
+            </div>
+            
+            <!-- Área de texto -->
+            <div class="section">
+                <div class="section-title">
+                    📝 Texto de Lectura
+                </div>
+                <textarea 
+                    class="text-area" 
+                    id="textArea" 
+                    placeholder="Pega o escribe aquí el texto que quieres analizar...&#10;&#10;💡 Consejo: Inicia el cronómetro antes de comenzar a leer para medir tu velocidad de lectura."
+                ></textarea>
+                <button class="btn btn-analyze" onclick="analyzeText()">📊 Analizar Lectura</button>
+            </div>
+            
+            <!-- Resultados -->
+            <div class="section" id="resultsSection" style="display: none;">
+                <div class="section-title">
+                    📈 Resultados del Análisis
+                </div>
+                
+                <div class="stats-container">
+                    <div class="stats-grid" id="statsGrid">
+                        <!-- Las estadísticas se llenarán dinámicamente -->
+                    </div>
+                    
+                    <div class="speed-indicator" id="speedIndicator">
+                        <!-- La velocidad se mostrará aquí -->
+                    </div>
+                </div>
+                
+                <div class="section-title" style="margin-top: 30px;">
+                    📋 Palabras Ordenadas Alfabéticamente
+                </div>
+                <div class="words-container">
+                    <div class="words-list" id="wordsList">
+                        <!-- Las palabras se mostrarán aquí -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let startTime = null;
+        let endTime = null;
+        let timerInterval = null;
+        let isRunning = false;
+
+        function startTimer() {
+            startTime = Date.now();
+            isRunning = true;
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('stopBtn').disabled = false;
+            
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function stopTimer() {
+            endTime = Date.now();
+            isRunning = false;
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = true;
+            
+            clearInterval(timerInterval);
+        }
+
+        function resetTimer() {
+            startTime = null;
+            endTime = null;
+            isRunning = false;
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = true;
+            document.getElementById('timerDisplay').textContent = '00:00:00';
+            
+            clearInterval(timerInterval);
+        }
+
+        function updateTimer() {
+            if (isRunning && startTime) {
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                const hours = Math.floor(elapsed / 3600);
+                const minutes = Math.floor((elapsed % 3600) / 60);
+                const seconds = elapsed % 60;
+                
+                document.getElementById('timerDisplay').textContent = 
+                    `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+        }
+
+        function cleanText(text) {
+            return text.toLowerCase()
+                      .replace(/[^\w\s]/g, '')
+                      .split(/\s+/)
+                      .filter(word => word.length > 0);
+        }
+
+        function analyzeText() {
+            const text = document.getElementById('textArea').value.trim();
+            
+            if (!text) {
+                alert('⚠️ Por favor, ingrese un texto para analizar.');
+                return;
+            }
+
+            const words = cleanText(text);
+            
+            if (words.length === 0) {
+                alert('⚠️ No se encontraron palabras válidas en el texto.');
+                return;
+            }
+
+            // Contar palabras
+            const totalWords = words.length;
+            const uniqueWords = [...new Set(words)];
+            const wordCount = {};
+            
+            words.forEach(word => {
+                wordCount[word] = (wordCount[word] || 0) + 1;
+            });
+
+            // Encontrar palabra más frecuente
+            const mostFrequent = Object.entries(wordCount)
+                .sort(([,a], [,b]) => b - a)[0];
+
+            // Calcular tiempo y velocidad
+            let readingTime = 0;
+            let speedInfo = '';
+            let speedClass = '';
+            
+            if (startTime && endTime) {
+                readingTime = (endTime - startTime) / 1000;
+            } else if (startTime && isRunning) {
+                readingTime = (Date.now() - startTime) / 1000;
+            }
+
+            if (readingTime > 0) {
+                const wpm = Math.round((totalWords / readingTime) * 60);
+                const minutes = Math.floor(readingTime / 60);
+                const seconds = Math.floor(readingTime % 60);
+                
+                let speedLabel = '';
+                if (wpm < 200) {
+                    speedLabel = '🐌 Lectura Lenta';
+                    speedClass = 'speed-slow';
+                } else if (wpm < 300) {
+                    speedLabel = '👍 Lectura Normal';
+                    speedClass = 'speed-normal';
+                } else if (wpm < 400) {
+                    speedLabel = '🚀 Lectura Rápida';
+                    speedClass = 'speed-fast';
+                } else {
+                    speedLabel = '⚡ Lectura Muy Rápida';
+                    speedClass = 'speed-very-fast';
+                }
+                
+                speedInfo = `⏱️ Tiempo: ${minutes}:${seconds.toString().padStart(2, '0')} | 📊 Velocidad: ${wpm} PPM | ${speedLabel}`;
+            } else {
+                speedInfo = '⏱️ Tiempo: No registrado | Use el cronómetro para medir la velocidad';
+                speedClass = 'speed-normal';
+            }
+
+            // Mostrar estadísticas
+            const statsGrid = document.getElementById('statsGrid');
+            statsGrid.innerHTML = `
+                <div class="stat-item">
+                    <div class="stat-number">${totalWords}</div>
+                    <div class="stat-label">📝 Total Palabras</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">${uniqueWords.length}</div>
+                    <div class="stat-label">🔤 Palabras Únicas</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">${Math.round((uniqueWords.length/totalWords)*100)}%</div>
+                    <div class="stat-label">📈 Diversidad Léxica</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">${mostFrequent[1]}</div>
+                    <div class="stat-label">🏆 "${mostFrequent[0]}"<br>Más Frecuente</div>
+                </div>
+            `;
+
+            // Mostrar velocidad
+            const speedIndicator = document.getElementById('speedIndicator');
+            speedIndicator.textContent = speedInfo;
+            speedIndicator.className = `speed-indicator ${speedClass}`;
+
+            // Mostrar palabras ordenadas
+            const sortedWords = uniqueWords.sort();
+            const wordsList = document.getElementById('wordsList');
+            wordsList.innerHTML = sortedWords
+                .map((word, index) => 
+                    `<div class="word-item">${index + 1}. ${word} (${wordCount[word]} veces)</div>`
+                ).join('');
+
+            // Mostrar sección de resultados
+            document.getElementById('resultsSection').style.display = 'block';
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+
+            // Mensaje de éxito
+            setTimeout(() => {
+                alert(`✅ ¡Análisis completado exitosamente!\n\nSe encontraron ${totalWords} palabras en total.\nSe identificaron ${uniqueWords.length} palabras únicas.`);
+            }, 500);
+        }
+
+        // Inicializar el cronómetro
+        updateTimer();
+    </script>
+</body>
+</html>
