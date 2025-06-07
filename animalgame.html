@@ -1,54 +1,642 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Animal Game</title>
-        <link rel="stylesheet" href="styles.css">
+        <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@300;400;600&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #041562 0%, #11468F 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        #seleccionar-mascota {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        .titulo {
+            color: white;
+            font-size: clamp(28px, 5vw, 48px);
+            font-family: 'Fredoka One', cursive;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitulo {
+            color: white;
+            font-size: clamp(16px, 3vw, 24px);
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        .tarjetas {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            max-width: 1000px;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .tarjetas-ataques {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .tarjeta-de-mokepon {
+            background: linear-gradient(145deg, #11468F, #1a5bb8);
+            padding: 20px;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            border: 3px solid transparent;
+            min-height: 180px;
+        }
+
+        .tarjeta-de-mokepon:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+        }
+
+        .tarjeta-de-mokepon img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            border: 3px solid rgba(255,255,255,0.3);
+        }
+
+        .tarjeta-de-mokepon p {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        #boton-mascota {
+            width: 200px;
+            height: 50px;
+            border-radius: 25px;
+            background: transparent;
+            border: 3px solid white;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #boton-mascota:hover {
+            background: white;
+            color: #041562;
+            transform: scale(1.05);
+        }
+
+        input {
+            display: none;
+        }
+
+        input:checked + label {
+            background: linear-gradient(145deg, #5D8BF4, #7ba3f7);
+            border-color: #FFD700;
+            transform: scale(1.05);
+        }
+
+        #seleccionar-ataque {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .boton-de-ataque {
+            background: linear-gradient(145deg, #11468F, #1a5bb8);
+            padding: 15px 25px;
+            border-radius: 20px;
+            border: none;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            min-width: 80px;
+        }
+
+        .boton-de-ataque:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+
+        .boton-de-ataque:disabled {
+            background: #112f58;
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        #mensajes {
+            max-width: 400px;
+            width: 100%;
+            background: rgba(238, 238, 238, 0.95);
+            padding: 25px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        #resultado {
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 15px;
+            color: #041562;
+        }
+
+        #boton-reiniciar {
+            background: #11468F;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 15px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #boton-reiniciar:hover {
+            background: #041562;
+            transform: scale(1.05);
+        }
+
+        .batalla-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            max-width: 800px;
+            width: 100%;
+            margin: 30px 0;
+            color: white;
+        }
+
+        .jugador-info, .enemigo-info {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .vidas {
+            font-size: 48px;
+            font-weight: 600;
+            margin: 10px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .mascota-nombre {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .ataques-historia {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            min-height: 40px;
+        }
+
+        .ataque-emoji {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 18px;
+            backdrop-filter: blur(5px);
+        }
+
+        .estado-juego {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .tarjetas {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 15px;
+            }
+
+            .tarjeta-de-mokepon {
+                padding: 15px;
+                min-height: 150px;
+            }
+
+            .tarjeta-de-mokepon img {
+                width: 60px;
+                height: 60px;
+            }
+
+            .tarjetas-ataques {
+                gap: 10px;
+            }
+
+            .boton-de-ataque {
+                padding: 12px 20px;
+                font-size: 20px;
+                min-width: 70px;
+            }
+
+            .batalla-info {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .vidas {
+                font-size: 36px;
+            }
+
+            #mensajes {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tarjetas {
+                grid-template-columns: 1fr;
+                max-width: 250px;
+            }
+
+            .tarjetas-ataques {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .boton-de-ataque {
+                width: 100%;
+                max-width: 200px;
+            }
+
+            #boton-mascota {
+                width: 100%;
+                max-width: 250px;
+            }
+        }
+
+        /* Animaciones */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .ganador {
+            animation: pulse 1s infinite;
+            color: #4CAF50;
+        }
+
+        .perdedor {
+            color: #f44336;
+        }
+
+        .empate {
+            color: #FF9800;
+        }
+        </style>
     </head>
     <body>
-        <section id="seleccionar-mascota">   
-            <h1 class="titulo">Animal Game</h1>
+        <div class="container">
+            <section id="seleccionar-mascota">   
+                <h1 class="titulo">🎮 Animal Game</h1>
+                <h2 class="subtitulo">Elige tu mascota:</h2>
+                <div id='contenedorTarjetas' class="tarjetas"></div>
+                <button id="boton-mascota">Seleccionar</button>
+            </section>
 
-            <h2 class="subtitulo">Elige tu mascota:</h2>
-
-            <div id='contenedorTarjetas' class="tarjetas">
-
-            </div>
-
-            <button id="boton-mascota">Seleccionar</button>
-        </section>
-
-        <section id="seleccionar-ataque">
-            <h1 class="titulo">Animal Game</h1>
-
-            <h2 class="subtitulo">Elige tu ataque:</h2>
-
-            <div id='contenedorAtaques' class="tarjetas-ataques">
-
-            </div>
-
-            <div id="mensajes">
-                <p id="resultado">Mucha suerte</p>
-
-                <section id="reiniciar">
-                    <button id="boton-reiniciar">Reiniciar</button>
-                </section>
-            </div>
-
-            <div class="ataques">
-                <div class="ataques-jugador">
-                    <p id="vidas-jugador">0</p>
-                    <p id="mascota-jugador"></p>
-                    <div id="ataques-del-jugador"></div>
+            <section id="seleccionar-ataque">
+                <h1 class="titulo">🎮 Animal Game</h1>
+                <h2 class="subtitulo">Elige tu ataque:</h2>
+                
+                <div class="batalla-info">
+                    <div class="jugador-info">
+                        <div class="vidas" id="vidas-jugador">0</div>
+                        <div class="mascota-nombre" id="mascota-jugador">Tu Mascota</div>
+                        <div class="ataques-historia" id="ataques-del-jugador"></div>
+                    </div>
+                    <div class="enemigo-info">
+                        <div class="vidas" id="vidas-enemigo">0</div>
+                        <div class="mascota-nombre" id="mascota-enemigo">Enemigo</div>
+                        <div class="ataques-historia" id="ataques-del-enemigo"></div>
+                    </div>
                 </div>
-                <div class="ataques-enemigo">
-                    <p id="vidas-enemigo">0</p>
-                    <p id="mascota-enemigo"></p>
-                    <div id="ataques-del-enemigo"></div>
+
+                <div id='contenedorAtaques' class="tarjetas-ataques"></div>
+
+                <div id="mensajes">
+                    <p id="resultado">¡Selecciona tus 5 ataques!</p>
+                    <div class="estado-juego">
+                        <span id="ataques-restantes">Ataques restantes: 5</span>
+                    </div>
+                    <section id="reiniciar" style="display: none;">
+                        <button id="boton-reiniciar">Jugar de Nuevo</button>
+                    </section>
                 </div>
-            </div>
-        </section>
-        <script src="./js/mokepon.js"></script>
+            </section>
+        </div>
+
+        <script>
+        // Referencias DOM
+        const sectionSeleccionarAtaque = document.getElementById('seleccionar-ataque')
+        const sectionReiniciar = document.getElementById('reiniciar')
+        const botonMascotaJugador = document.getElementById('boton-mascota')
+        const botonReiniciar = document.getElementById('boton-reiniciar')
+        const sectionSeleccionarMascota = document.getElementById('seleccionar-mascota')
+        const spanMascotaJugador = document.getElementById('mascota-jugador')
+        const spanMascotaEnemigo = document.getElementById('mascota-enemigo')
+        const spanVidasJugador = document.getElementById('vidas-jugador')
+        const spanVidasEnemigo = document.getElementById('vidas-enemigo')
+        const sectionMensajes = document.getElementById('resultado')
+        const ataquesDelJugador = document.getElementById('ataques-del-jugador')
+        const ataquesDelEnemigo = document.getElementById('ataques-del-enemigo')
+        const contenedorTarjetas = document.getElementById('contenedorTarjetas')
+        const contenedorAtaques = document.getElementById('contenedorAtaques')
+        const ataquesRestantes = document.getElementById('ataques-restantes')
+
+        // Variables del juego
+        let mokepones = []
+        let ataqueJugador = []
+        let ataqueEnemigo = []
+        let mascotaJugador
+        let ataquesMokeponEnemigo
+        let botones = []
+        let victoriasJugador = 0
+        let victoriasEnemigo = 0
+        let ataquesPendientes = 5
+
+        // Clase Mokepon
+        class Mokepon {
+            constructor(nombre, foto, vida) {
+                this.nombre = nombre
+                this.foto = foto
+                this.vida = vida
+                this.ataques = []
+            }
+        }
+
+        // Crear mascotas
+        let coco = new Mokepon('Coco', 'pics/chiguagua.jpg', 5)
+        let muñeca = new Mokepon('Muñeca', 'pics/gato.jpg', 5)
+        let tortuga = new Mokepon('Tortuga', 'pics/tortuga.jpg', 5)
+        let perico = new Mokepon('Perico', 'pics/perico.png', 5)
+        let caramelo = new Mokepon('Caramelo', 'pics/caramelo.png', 5)
+
+        // Definir ataques para cada mascota
+        coco.ataques.push(
+            { nombre: '💧', id: 'boton-agua', tipo: 'AGUA' },
+            { nombre: '💧', id: 'boton-agua', tipo: 'AGUA' },
+            { nombre: '💧', id: 'boton-agua', tipo: 'AGUA' },
+            { nombre: '🔥', id: 'boton-fuego', tipo: 'FUEGO' },
+            { nombre: '🌱', id: 'boton-tierra', tipo: 'TIERRA' },
+        )
+
+        muñeca.ataques.push(
+            { nombre: '🌱', id: 'boton-tierra', tipo: 'TIERRA' },
+            { nombre: '🌱', id: 'boton-tierra', tipo: 'TIERRA' },
+            { nombre: '🌱', id: 'boton-tierra', tipo: 'TIERRA' },
+            { nombre: '💧', id: 'boton-agua', tipo: 'AGUA' },
+            { nombre: '🔥', id: 'boton-fuego', tipo: 'FUEGO' },
+        )
+
+        tortuga.ataques.push(
+            { nombre: '🔥', id: 'boton-fuego', tipo: 'FUEGO' },
+            { nombre: '🔥', id: 'boton-fuego', tipo: 'FUEGO' },
+            { nombre: '🔥', id: 'boton-fuego', tipo: 'FUEGO' }, 
+            { nombre: '💧', id: 'boton-agua', tipo: 'AGUA' },
+            { nombre: '🌱', id: 'boton-tierra', tipo: 'TIERRA' },
+        )
+
+        perico.ataques.push(
+            { nombre: '🔥', id: 'boton-fuego', tipo: 'FUEGO' },
+            { nombre: '🔥', id: 'boton-fuego', tipo: 'FUEGO' },
+            { nombre: '🔥', id: 'boton-fuego', tipo: 'FUEGO' }, 
+            { nombre: '💧', id: 'boton-agua', tipo: 'AGUA' },
+            { nombre: '🌱', id: 'boton-tierra', tipo: 'TIERRA' },
+        )
+
+        caramelo.ataques.push(
+            { nombre: '🔥', id: 'boton-fuego', tipo: 'FUEGO' },
+            { nombre: '🔥', id: 'boton-fuego', tipo: 'FUEGO' },
+            { nombre: '🔥', id: 'boton-fuego', tipo: 'FUEGO' }, 
+            { nombre: '💧', id: 'boton-agua', tipo: 'AGUA' },
+            { nombre: '🌱', id: 'boton-tierra', tipo: 'TIERRA' },
+        )
+
+        mokepones.push(coco, muñeca, tortuga, perico, caramelo)
+
+        function iniciarJuego() {
+            sectionSeleccionarAtaque.style.display = 'none'
+            
+            mokepones.forEach((mokepon) => {
+                const opcionDeMokepones = `
+                    <input type="radio" name="mascota" id="${mokepon.nombre}" />
+                    <label class="tarjeta-de-mokepon" for="${mokepon.nombre}">
+                        <img src="${mokepon.foto}" alt="${mokepon.nombre}">
+                        <p>${mokepon.nombre}</p>
+                    </label>
+                `
+                contenedorTarjetas.innerHTML += opcionDeMokepones
+            })
+            
+            botonMascotaJugador.addEventListener('click', seleccionarMascotaJugador)
+            botonReiniciar.addEventListener('click', reiniciarJuego)
+        }
+
+        function seleccionarMascotaJugador() {
+            const mascotaSeleccionada = document.querySelector('input[name="mascota"]:checked')
+            
+            if (!mascotaSeleccionada) {
+                alert('⚠️ Por favor selecciona una mascota')
+                return
+            }
+
+            mascotaJugador = mascotaSeleccionada.id
+            spanMascotaJugador.innerHTML = mascotaJugador
+            
+            sectionSeleccionarMascota.style.display = 'none'
+            sectionSeleccionarAtaque.style.display = 'flex'
+            
+            extraerAtaques(mascotaJugador)
+            seleccionarMascotaEnemigo()
+        }
+
+        function extraerAtaques(mascotaJugador) {
+            let ataques = mokepones.find(mokepon => mokepon.nombre === mascotaJugador).ataques
+            mostrarAtaques(ataques)
+        }
+
+        function mostrarAtaques(ataques) {
+            ataques.forEach((ataque) => {
+                const ataquesMokepon = `
+                    <button id="${ataque.id}" class="boton-de-ataque BAtaque" data-tipo="${ataque.tipo}">${ataque.nombre}</button>
+                `
+                contenedorAtaques.innerHTML += ataquesMokepon
+            })
+
+            botones = document.querySelectorAll('.BAtaque')
+            secuenciaAtaque()
+        }
+
+        function secuenciaAtaque() {
+            botones.forEach((boton) => {
+                boton.addEventListener('click', (e) => {
+                    const tipoAtaque = e.target.dataset.tipo
+                    ataqueJugador.push(tipoAtaque)
+                    
+                    boton.style.background = '#112f58'
+                    boton.disabled = true
+                    
+                    ataquesPendientes--
+                    ataquesRestantes.innerHTML = `Ataques restantes: ${ataquesPendientes}`
+                    
+                    ataqueAleatorioEnemigo()
+                })
+            })
+        }
+
+        function seleccionarMascotaEnemigo() {
+            let mascotaAleatoria = aleatorio(0, mokepones.length - 1)
+            spanMascotaEnemigo.innerHTML = mokepones[mascotaAleatoria].nombre
+            ataquesMokeponEnemigo = mokepones[mascotaAleatoria].ataques
+        }
+
+        function ataqueAleatorioEnemigo() {
+            let ataqueAleatorio = aleatorio(0, ataquesMokeponEnemigo.length - 1)
+            ataqueEnemigo.push(ataquesMokeponEnemigo[ataqueAleatorio].tipo)
+            iniciarPelea()
+        }
+
+        function iniciarPelea() {
+            if (ataqueJugador.length === 5) {
+                combate()
+            }
+        }
+
+        function combate() {
+            spanVidasJugador.innerHTML = victoriasJugador
+            spanVidasEnemigo.innerHTML = victoriasEnemigo
+            
+            for (let index = 0; index < ataqueJugador.length; index++) {
+                if (ataqueJugador[index] === ataqueEnemigo[index]) {
+                    crearMensaje("EMPATE", index)
+                } else if (
+                    (ataqueJugador[index] === 'FUEGO' && ataqueEnemigo[index] === 'TIERRA') ||
+                    (ataqueJugador[index] === 'AGUA' && ataqueEnemigo[index] === 'FUEGO') ||
+                    (ataqueJugador[index] === 'TIERRA' && ataqueEnemigo[index] === 'AGUA')
+                ) {
+                    victoriasJugador++
+                    crearMensaje("GANASTE", index)
+                } else {
+                    victoriasEnemigo++
+                    crearMensaje("PERDISTE", index)
+                }
+            }
+
+            spanVidasJugador.innerHTML = victoriasJugador
+            spanVidasEnemigo.innerHTML = victoriasEnemigo
+            revisarVidas()
+        }
+
+        function revisarVidas() {
+            if (victoriasJugador === victoriasEnemigo) {
+                crearMensajeFinal("🤝 ¡Empate! Fue una batalla reñida", "empate")
+            } else if (victoriasJugador > victoriasEnemigo) {
+                crearMensajeFinal("🏆 ¡FELICITACIONES! ¡Ganaste!", "ganador")
+            } else {
+                crearMensajeFinal('😢 Lo siento, perdiste esta vez', "perdedor")
+            }
+        }
+
+        function crearMensaje(resultado, index) {
+            const emojiJugador = obtenerEmoji(ataqueJugador[index])
+            const emojiEnemigo = obtenerEmoji(ataqueEnemigo[index])
+            
+            let nuevoAtaqueDelJugador = document.createElement('span')
+            let nuevoAtaqueDelEnemigo = document.createElement('span')
+
+            nuevoAtaqueDelJugador.innerHTML = emojiJugador
+            nuevoAtaqueDelEnemigo.innerHTML = emojiEnemigo
+            nuevoAtaqueDelJugador.className = 'ataque-emoji'
+            nuevoAtaqueDelEnemigo.className = 'ataque-emoji'
+
+            ataquesDelJugador.appendChild(nuevoAtaqueDelJugador)
+            ataquesDelEnemigo.appendChild(nuevoAtaqueDelEnemigo)
+        }
+
+        function obtenerEmoji(tipoAtaque) {
+            switch(tipoAtaque) {
+                case 'FUEGO': return '🔥'
+                case 'AGUA': return '💧'
+                case 'TIERRA': return '🌱'
+                default: return '❓'
+            }
+        }
+
+        function crearMensajeFinal(resultadoFinal, clase) {
+            sectionMensajes.innerHTML = resultadoFinal
+            sectionMensajes.className = clase
+            ataquesRestantes.style.display = 'none'
+            sectionReiniciar.style.display = 'block'
+        }
+
+        function reiniciarJuego() {
+            location.reload()
+        }
+
+        function aleatorio(min, max) {
+            return Math.floor(Math.random() * (max - min + 1) + min)
+        }
+
+        window.addEventListener('load', iniciarJuego)
+        </script>
     </body>
 </html>
