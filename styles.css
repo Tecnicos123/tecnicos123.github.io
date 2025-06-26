@@ -149,6 +149,9 @@
     header {
       animation: fadeIn 0.8s ease-out;
     }
+    
+    /* Estilos para los párrafos */
+    
 
     p1 {
       font-size: 1.1rem;
@@ -166,6 +169,13 @@
     }
     p3 {
       font-size: 1.5rem;
+      margin: 10px 0;
+      color: #555;
+      line-height: 1.5;
+      text-align: justify;
+    }
+    p4 {
+      font-size: 1.1rem;
       margin: 10px 0;
       color: #555;
       line-height: 1.5;
