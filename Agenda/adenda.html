@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #a5b3c7;
+            color: #999090;
+        }
+        
+        .navbar {
+            background-color: #1e5b94;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        
+        .logo {
+            color: rgb(219, 223, 232);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .nav-links {
+            display: flex;
+        }
+        
+        .nav-links a {
+            color: rgb(235, 225, 225);
+            text-decoration: none;
+            margin-left: 1.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            background-color: #3a7cb5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 80px auto 0;
+            padding: 20px;
+        }
+        
+        .welcome-section {
+            background-color: rgb(218, 221, 231);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .welcome-section h1 {
+            color: #1e5b94;
+            margin-bottom: 1rem;
+        }
+        
+        .welcome-section p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 2rem;
+        }
+        
+        .subject-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+         .subject-card-image {
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .subject-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            padding: 1rem;
+            color: rgb(192, 221, 217);
+            font-weight: bold;
+        }
+        
+        .mathematics {
+            background-color: #2c78d4;
+        }
+        
+        .science {
+            background-color: #3a7cb5;
+        }
+        
+        .religion {
+            background-color: #5c9eda;
+        }
+        
+        .computing {
+            background-color: #7fb3e3;
+        }
+        
+        .laboratory {
+            background-color: #a7cbed;
+        }
+        
+        .card-content {
+            padding: 1rem;
+        }
+        
+        .card-content h3 {
+            margin-bottom: 0.5rem;
+            color: #1e5b94;
+        }
+        
+        .card-content p {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .card-content ul {
+            margin-top: 0.5rem;
+            padding-left: 1.5rem;
+        }
+        
+        .card-content li {
+            margin-bottom: 0.3rem;
+            color: #555;
+        }
+        
+        .view-more {
+            display: inline-block;
+            margin-top: 1rem;
+            color: #1e5b94;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        .view-more:hover {
+            text-decoration: underline;
+        }
+        
+        footer {
+            background-color: #1e5b94;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        /* Páginas adicionales (ocultas por defecto) */
+        .page {
+            display: none;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .page h2 {
+            color: #1e5b94;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        /* Agenda */
+        .agenda-list {
+            list-style: none;
+        }
+        
+        .agenda-item {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+        
+        .agenda-date {
+            flex: 0 0 100px;
+            background-color: #1e5b94;
+            color: white;
+            padding: 0.5rem;
+            text-align: center;
+            border-radius: 4px;
+            margin-right: 1rem;
+        }
+        
+        .agenda-content h3 {
+            color: #1e5b94;
+            margin-bottom: 0.3rem;
+        }
+        
+        /* Horario */
+        .timetable {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .timetable th {
+            background-color: #1e5b94;
+            color: white;
+            padding: 0.8rem;
+        }
+        
+        .timetable td {
+            padding: 0.8rem;
+            border: 1px solid #eee;
+            text-align: center;
+        }
+        
+        .timetable tr:nth-child(even) {
+            background-color: #f5f7fa;
+        }
+        
+        .mathematics-class {
+            background-color: rgba(44, 120, 212, 0.1);
+        }
+        
+        .science-class {
+            background-color: rgba(58, 124, 181, 0.1);
+        }
+        
+        .religion-class {
+            background-color: rgba(92, 158, 218, 0.1);
+        }
+        
+        .computing-class {
+            background-color: rgba(127, 179, 227, 0.1);
+        }
+        
+        .laboratory-class {
+            background-color: rgba(167, 203, 237, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Menú de navegación fijo -->
+    <nav class="navbar">
+        <div class="logo">Portal Educativo</div>
+        <div class="nav-links">
+            <a href="#" onclick="showPage('home')">Inicio</a>
+            <a href="https://www.cuandoenelmundo.com/calendario/panama/2025">Calendario</a>
+            <a href="#" onclick="showPage('agenda')">Agenda</a>
+            <a href="#" onclick="showPage('schedule')">Horario</a>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <!-- Página de inicio -->
+        <div id="home" class="page" style="display: block;">
+            <div class="welcome-section">
+                <h1>Bienvenido al Portal Educativo</h1>
+                <p>Aquí encontrarás toda la información relacionada con las actividades escolares de las diferentes materias.</p>
+            </div>
+            
+            <div class="subjects-grid">
+                <!-- Tarjeta de Matemáticas -->
+                <div class="subject-card">
+                    <div class="card-header mathematics">Matemáticas</div>
+                    <div class="card-content">
+                        <div class="subject-card-image">
+                            <img src="matematicas-e1551990322160-800x399.jpg" alt="Matemáticas" style="width: 90%; height: 90%; object-fit: cover;">
+                        </div>
+                        <h3>Actividades Recientes</h3>
+                        <ul>
+                            <li>Taller de resolución de problemas</li>
+                            <li>Concurso de habilidades matemáticas</li>
+                            <li>Preparación para olimpiadas</li>
+                        </ul>
+                        <a href="#" class="view-more">Ver más...</a>
+                    </div>
+                </div>
+                
+                <!-- Tarjeta de Ciencias -->
+                <div class="subject-card">
+                    <div class="card-header science">Ciencias</div>
+                    <div class="card-content">
+                        <div class="subject-card-image">
+                            <img src="matematicas-e1551990322160-800x399.jpg" alt="Matemáticas" style="width: 90%; height: 90%; object-fit: cover;">
+                        </div>
+                        <h3>Actividades Recientes</h3>
+                        <ul>
+                            <li>Feria de ciencias</li>
+                            <li>Proyecto de investigación ambiental</li>
+                            <li>Visita al museo de ciencias</li>
+                        </ul>
+                        <a href="#" class="view-more">Ver más...</a>
+                    </div>
+                </div>
+                
+                <!-- Tarjeta de Religión -->
+                <div class="subject-card">
+                    <div class="card-header religion">Religión</div>
+                    <div class="card-content">
+                        <div class="subject-card-image">
+                            <img src="matematicas-e1551990322160-800x399.jpg" alt="Matemáticas" style="width: 90%; height: 90%; object-fit: cover;">
+                        </div>
+                        <h3>Actividades Recientes</h3>
+                        <ul>
+                            <li>Celebración religiosa escolar</li>
+                            <li>Proyectos de valores y ética</li>
+                            <li>Charlas sobre diversidad religiosa</li>
+                        </ul>
+                        <a href="#" class="view-more">Ver más...</a>
+                    </div>
+                </div>
+                
+                <!-- Tarjeta de Informática -->
+                <div class="subject-card">
+                    <div class="card-header computing">Informática</div>
+                    <div class="card-content">
+                        <div class="subject-card-image">
+                            <img src="matematicas-e1551990322160-800x399.jpg" alt="Matemáticas" style="width: 90%; height: 90%; object-fit: cover;">
+                        </div>
+                        <h3>Actividades Recientes</h3>
+                        <ul>
+                            <li>Taller de programación</li>
+                            <li>Concurso de diseño web</li>
+                            <li>Proyecto de aplicación móvil</li>
+                        </ul>
+                        <a href="#" class="view-more">Ver más...</a>
+                    </div>
+                </div>
+                
+                <!-- Tarjeta de Laboratorio -->
+                <div class="subject-card">
+                    <div class="card-header laboratory">Laboratorio</div>
+                    <div class="card-content">
+                        <div class="subject-card-image">
+                            <img src="matematicas-e1551990322160-800x399.jpg" alt="Matemáticas" style="width: 90%; height: 90%; object-fit: cover;">
+                        </div>
+                        <h3>Actividades Recientes</h3>
+                        <ul>
+                            <li>Experimentos de química</li>
+                            <li>Prácticas de física</li>
+                            <li>Investigación de biología</li>
+                        </ul>
+                        <a href="#" class="view-more">Ver más...</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Página de Agenda -->
+        <div id="agenda" class="page">
+            <h2>Agenda de Actividades</h2>
+            <ul class="agenda-list">
+                <li class="agenda-item">
+                    <div class="agenda-date">
+                        <div>1 Mayo</div>
+                        <div>2025</div>
+                    </div>
+                    <div class="agenda-content">
+                        <h3>Día del Trabajo</h3>
+                        <p>Feriado nacional. No hay actividades escolares.</p>
+                    </div>
+                </li>
+                <li class="agenda-item">
+                    <div class="agenda-date">
+                        <div>5 Mayo</div>
+                        <div>2025</div>
+                    </div>
+                    <div class="agenda-content">
+                        <h3>Examen de Matemáticas</h3>
+                        <p>Evaluación sobre álgebra y geometría. Aula 202, 9:00 AM.</p>
+                    </div>
+                </li>
+                <li class="agenda-item">
+                    <div class="agenda-date">
+                        <div>7 Mayo</div>
+                        <div>2025</div>
+                    </div>
+                    <div class="agenda-content">
+                        <h3>Laboratorio de Química</h3>
+                        <p>Práctica sobre reacciones químicas. Traer bata de laboratorio.</p>
+                    </div>
+                </li>
+                <li class="agenda-item">
+                    <div class="agenda-date">
+                        <div>9 Mayo</div>
+                        <div>2025</div>
+                    </div>
+                    <div class="agenda-content">
+                        <h3>Entrega de Proyecto de Informática</h3>
+                        <p>Fecha límite para entregar el proyecto de programación.</p>
+                    </div>
+                </li>
+                <li class="agenda-item">
+                    <div class="agenda-date">
+                        <div>14 Mayo</div>
+                        <div>2025</div>
+                    </div>
+                    <div class="agenda-content">
+                        <h3>Feria de Ciencias</h3>
+                        <p>Presentación de proyectos científicos en el auditorio principal.</p>
+                    </div>
+                </li>
+                <li class="agenda-item">
+                    <div class="agenda-date">
+                        <div>15 Mayo</div>
+                        <div>2025</div>
+                    </div>
+                    <div class="agenda-content">
+                        <h3>Acto Religioso</h3>
+                        <p>Celebración espiritual en el patio central, 10:00 AM.</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Página de Horario -->
+        <div id="schedule" class="page">
+            <h2>Horario de Clases</h2>
+            <table class="timetable">
+                <thead>
+                    <tr>
+                        <th>Hora</th>
+                        <th>Lunes</th>
+                        <th>Martes</th>
+                        <th>Miércoles</th>
+                        <th>Jueves</th>
+                        <th>Viernes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>8:00 - 8:50</td>
+                        <td class="mathematics-class">Matemáticas</td>
+                        <td class="science-class">Ciencias</td>
+                        <td class="mathematics-class">Matemáticas</td>
+                        <td class="religion-class">Religión</td>
+                        <td class="science-class">Ciencias</td>
+                    </tr>
+                    <tr>
+                        <td>9:00 - 9:50</td>
+                        <td class="science-class">Ciencias</td>
+                        <td class="mathematics-class">Matemáticas</td>
+                        <td class="laboratory-class">Laboratorio</td>
+                        <td class="computing-class">Informática</td>
+                        <td class="mathematics-class">Matemáticas</td>
+                    </tr>
+                    <tr>
+                        <td>10:00 - 10:50</td>
+                        <td class="computing-class">Informática</td>
+                        <td class="religion-class">Religión</td>
+                        <td class="science-class">Ciencias</td>
+                        <td class="mathematics-class">Matemáticas</td>
+                        <td class="laboratory-class">Laboratorio</td>
+                    </tr>
+                    <tr>
+                        <td>11:00 - 11:20</td>
+                        <td colspan="5" style="background-color: #f5f7fa;">RECREO</td>
+                    </tr>
+                    <tr>
+                        <td>11:30 - 12:20</td>
+                        <td class="religion-class">Religión</td>
+                        <td class="laboratory-class">Laboratorio</td>
+                        <td class="computing-class">Informática</td>
+                        <td class="science-class">Ciencias</td>
+                        <td class="computing-class">Informática</td>
+                    </tr>
+                    <tr>
+                        <td>12:30 - 13:20</td>
+                        <td class="laboratory-class">Laboratorio</td>
+                        <td class="computing-class">Informática</td>
+                        <td class="religion-class">Religión</td>
+                        <td class="laboratory-class">Laboratorio</td>
+                        <td class="religion-class">Religión</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <footer>
+        &copy; 2025 Portal Educativo - Todos los derechos reservados
+    </footer>
+    
+    <script>
+        // Función para mostrar páginas
+        function showPage(pageId) {
+            // Ocultar todas las páginas
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => {
+                page.style.display = 'none';
+            });
+            
+            // Mostrar la página seleccionada
+            document.getElementById(pageId).style.display = 'block';
+            
+            // Scroll al inicio
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>
