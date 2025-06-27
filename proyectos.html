@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyectos de Programación</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #a4a8b8 0%, #474c7e 100%);
+            min-height: 100vh;
+        }
+
+        /* Header y Navegación */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #667eea;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Menu móvil */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: #333;
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        /* Contenido principal */
+        main {
+            margin-top: 80px;
+            padding: 2rem 5%;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Sección Hero */
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease 0.2s both;
+        }
+
+        /* Sección de proyectos */
+        .proyectos {
+            padding: 4rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 3rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        .proyectos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .proyecto-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 1s ease;
+        }
+
+        .proyecto-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .proyecto-imagen {
+            width: 100%;
+            height: 200px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .proyecto-imagen img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .proyecto-imagen:hover img {
+            transform: scale(1.05);
+        }
+
+        .proyecto-imagen .placeholder {
+            color: #999;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .proyecto-card h3 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .proyecto-card p {
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        
+
+        .tech-tag {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .proyecto-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0,0,0,0.8);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+
+        /* Animaciones */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: white;
+                flex-direction: column;
+                padding: 1rem;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+                color: #000;
+            }
+
+            .proyectos-grid {
+                grid-template-columns: 1fr;
+            }
+
+            main {
+                padding: 2rem 3%;
+            }
+        }
+        h2 {
+            color: #f1e7e7;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            align-content: center;
+        }
+        h3 {
+            color: #333;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        p2 {
+            color: #e9dede;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            align-content: justify;
+        }
+        .games-section {
+            padding: 4rem 0;
+            text-align: center;
+        }
+        .games-section h2 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        .games-section p2 {
+            color: #666;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        .games-section a {
+            display: inline-block;
+        }   
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <h3>Proyectos de Referencia.</h3>
+            <ul class="nav-links">
+                <li><a href="index.html">Inicio</a></li>
+                
+            </ul>
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        
+    
+        <section id="proyectos" class="proyectos">
+            <h3 class="section-title">Proyectos.</h3>
+            <div class="proyectos-grid">
+                
+                <!-- Proyecto 1 -->
+                <div class="proyecto-card">
+                    <div class="proyecto-imagen">
+                        <div class="placeholder">Agrega tu imagen aquí<br>📷</div>
+                        <!-- Para agregar imagen, reemplaza el div placeholder con:
+                        <img src="ruta-de-tu-imagen.jpg" alt="Descripción del proyecto"> -->
+                    </div>
+                    <h3>Sistema de Gestión de Tareas</h3>
+                    <p>Una aplicación web completa para gestionar tareas diarias con funcionalidades de CRUD, autenticación de usuarios y notificaciones en tiempo real.</p>
+                    
+                    <div class="proyecto-links">
+                        <a href="#" class="btn btn-primary">Ver Demo</a>
+                        
+                    </div>
+                </div>
+
+                <!-- Proyecto 2 -->
+                <div class="proyecto-card">
+                    <div class="proyecto-imagen">
+                        <div class="placeholder">Agrega tu imagen aquí<br>📱</div>
+                    </div>
+                    <h3>App Móvil de Recetas</h3>
+                    <p>Aplicación móvil que permite a los usuarios buscar, guardar y compartir recetas de cocina con una interfaz intuitiva y moderna.</p>
+                    
+                    <div class="proyecto-links">
+                        <a href="#" class="btn btn-primary">Ver Demo</a>
+                        
+                    </div>
+                </div>
+
+                <!-- Proyecto 3 -->
+                <div class="proyecto-card">
+                    <div class="proyecto-imagen">
+                        <div class="placeholder">Agrega tu imagen aquí<br>🎮</div>
+                    </div>
+                    <h3>Juego de Trivia Online</h3>
+                    <p>Juego interactivo multijugador con diferentes categorías de preguntas, sistema de puntuación y rankings en tiempo real.</p>
+                    
+                    <div class="proyecto-links">
+                        <a href="#" class="btn btn-primary">Ver Demo</a>
+                        
+                    </div>
+                </div>
+
+                <!-- Proyecto 4 -->
+                <div class="proyecto-card">
+                    <div class="proyecto-imagen">
+                        <div class="placeholder">Agrega tu imagen aquí<br>📊</div>
+                    </div>
+                    <h3>Dashboard de Analíticas</h3>
+                    <p>Panel de control interactivo para visualizar datos y métricas importantes con gráficos dinámicos y filtros personalizables.</p>
+                    
+                    <div class="proyecto-links">
+                        <a href="#" class="btn btn-primary">Ver Demo</a>
+                        
+                    </div>
+                </div>
+
+            </div>
+                </section>  
+
+                <section>
+                    <center>
+                    <h2>Documentación de Tecnologías.</h2>
+                    </center>
+                    <p2>Todas las tecnologías que conocemos, tienen su documentación. Siempre podemos aprender más leyendo y visitando los sitios webs oficiales !</p2>
+                </section>
+
+            </div>
+</section>
+    </main>
+
+    <footer>
+        <p>Portafolio de proyectos, Junio 2025.</p>
+    </footer>
+
+
+
+    <script>
+        // Toggle menu móvil
+        function toggleMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('active');
+        }
+
+        // Smooth scroll para navegación
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Efecto de scroll en header
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+            }
+        });
+
+        // Animaciones on scroll
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationDelay = '0s';
+                    entry.target.style.animationPlayState = 'running';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.proyecto-card').forEach(card => {
+            observer.observe(card);
+        });
+    </script>
+    
+</body>
+ 
+</html>
