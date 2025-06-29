@@ -1,0 +1,10 @@
+setup /configure configuration.xml
+
+
+https://massgrave.dev/
+
+
+power shell
+
+
+irm https://massgrave.dev/get | iex
